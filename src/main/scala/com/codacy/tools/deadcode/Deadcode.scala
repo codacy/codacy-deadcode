@@ -9,7 +9,6 @@ import scala.util.{Success, Try}
 
 object Deadcode extends Tool {
   private val deadcodeCommand = "/app/deadcode"
-  private val deadcodePatternId = Pattern.Id("deadcode")
   private val directoriesMaxDepth = 5
 
   override def apply(
@@ -59,7 +58,8 @@ object Deadcode extends Tool {
   private def handleToolResults(commandResults: CommandResult) = {
     commandResults match {
       case resultFromTool if resultFromTool.exitCode < 2 => List.empty
-      case resultFromTool if resultFromTool.exitCode == 2 => parseResults(resultFromTool.stderr)
+      // deadcode returns exit code 2 when there are results
+      case resultFromTool if resultFromTool.exitCode == 2 => DeadcodeResultsParser.parse(resultFromTool.stderr)
       case resultFromTool if resultFromTool.exitCode > 2 =>
         throw new scala.Exception(
           s"Exit code: ${resultFromTool.exitCode}\n" +
@@ -67,14 +67,5 @@ object Deadcode extends Tool {
             s"sterr: ${resultFromTool.stdout}\n"
         )
     }
-  }
-
-  private def parseResults(results: List[String]): List[Result] = {
-    results.map(parseResult)
-  }
-
-  private def parseResult(result: String): Result = {
-    val Array(_, filename, line, _, message) = result.split(":")
-    Result.Issue(Source.File(filename.trim), Result.Message(message.trim), deadcodePatternId, Source.Line(line.toInt))
   }
 }

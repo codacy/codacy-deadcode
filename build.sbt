@@ -9,7 +9,10 @@ libraryDependencies ++= Seq(
   "com.github.pathikrit" %% "better-files" % "3.9.1"
 ).map(_.withSources())
 
-libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.7" % Test
+libraryDependencies ++= Seq(
+  "org.scalatest" %% "scalatest" % "3.2.3" % Test,
+  "org.scalatest" %% "scalatest-wordspec" % "3.2.3" % Test
+)
 
 enablePlugins(JavaAppPackaging)
 enablePlugins(DockerPlugin)

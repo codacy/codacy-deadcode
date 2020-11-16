@@ -36,7 +36,6 @@ workflows:
               only: master
           requires:
             - publish_docker_local
-            - plugins_test
       - codacy/tag_version:
           context: CodacyAWS
           requires:
