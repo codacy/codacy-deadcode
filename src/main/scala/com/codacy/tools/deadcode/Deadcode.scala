@@ -3,7 +3,7 @@ package com.codacy.tools.deadcode
 import better.files._
 import com.codacy.plugins.api.results.{Pattern, Result, Tool}
 import com.codacy.plugins.api.{Options, Source}
-import com.codacy.tools.scala.seed.utils.CommandRunner
+import com.codacy.tools.scala.seed.utils.{CommandResult, CommandRunner}
 
 import scala.util.{Success, Try}
 
@@ -49,16 +49,23 @@ object Deadcode extends Tool {
     val command = List(deadcodeCommand, directory.path.toString)
 
     CommandRunner.exec(command) match {
-      case Right(resultFromTool) if resultFromTool.exitCode < 2 => List.empty
-      case Right(resultFromTool) if resultFromTool.exitCode == 2 => parseResults(resultFromTool.stderr)
-      case Right(resultFromTool) if resultFromTool.exitCode > 2 =>
+      case Right(commandResults) =>
+        handleToolResults(commandResults)
+      case Left(failure) =>
+        throw failure
+    }
+  }
+
+  private def handleToolResults(commandResults: CommandResult) = {
+    commandResults match {
+      case resultFromTool if resultFromTool.exitCode < 2 => List.empty
+      case resultFromTool if resultFromTool.exitCode == 2 => parseResults(resultFromTool.stderr)
+      case resultFromTool if resultFromTool.exitCode > 2 =>
         throw new scala.Exception(
           s"Exit code: ${resultFromTool.exitCode}\n" +
             s"stdout: ${resultFromTool.stdout}\n" +
             s"sterr: ${resultFromTool.stdout}\n"
         )
-      case Left(failure) =>
-        throw failure
     }
   }
 
