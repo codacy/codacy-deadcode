@@ -56,15 +56,18 @@ object Deadcode extends Tool {
   }
 
   private def handleToolResults(commandResults: CommandResult) = {
-    commandResults match {
-      case resultFromTool if resultFromTool.exitCode < 2 => List.empty
-      // deadcode returns exit code 2 when there are results
-      case resultFromTool if resultFromTool.exitCode == 2 => DeadcodeResultsParser.parse(resultFromTool.stderr)
-      case resultFromTool if resultFromTool.exitCode > 2 =>
+    DeadcodeExitStatus.fromExitCode(commandResults.exitCode) match {
+      case DeadcodeExitStatus.SuccessNoIssues => List.empty
+      case DeadcodeExitStatus.SuccessWithIssues =>
+        // The tool returns non 0 exit code when there are issues.
+        // This means the results are printed to stderr
+        // It doesn't mean it is an error running
+        DeadcodeResultsParser.parse(commandResults.stderr)
+      case DeadcodeExitStatus.Error =>
         throw new scala.Exception(
-          s"Exit code: ${resultFromTool.exitCode}\n" +
-            s"stdout: ${resultFromTool.stdout}\n" +
-            s"sterr: ${resultFromTool.stdout}\n"
+          s"Exit code: ${commandResults.exitCode}\n" +
+            s"stdout: ${commandResults.stdout}\n" +
+            s"sterr: ${commandResults.stdout}\n"
         )
     }
   }

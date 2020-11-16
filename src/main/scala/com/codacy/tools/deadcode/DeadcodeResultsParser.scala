@@ -7,6 +7,9 @@ import scala.util.{Success, Try}
 
 object DeadcodeResultsParser {
 
+  // This parses results with the following format: "deadcode: <filename>:<line>:<column>: <message>"
+  // If a format is wrong it will ignore the line.
+  // In practice the results should never have a different format, so this should not fail.
   def parse(results: List[String]): List[Result] = {
     results.map(parseSingleResult).collect { case Success(issue) => issue }
   }
