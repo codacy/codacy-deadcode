@@ -34,7 +34,7 @@ val dockerGroup = "docker"
 Docker / daemonUser := dockerUser
 Docker / daemonGroup := dockerGroup
 
-dockerBaseImage := "deadcode-base"
+dockerBaseImage := "codacy-deadcode-base"
 
 mainClass in Compile := Some("com.codacy.tools.deadcode.Engine")
 
