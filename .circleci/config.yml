@@ -30,12 +30,17 @@ workflows:
           persist_to_workspace: true
           requires:
             - check_format_and_test
+      - codacy_plugins_test/run:
+          name: plugins_test
+          run_multiple_tests: true
+          requires:
+            - publish_docker_local
       - codacy/publish_docker:
           filters:
             branches:
               only: master
           requires:
-            - publish_docker_local
+            - plugins_test
       - codacy/tag_version:
           context: CodacyAWS
           requires:

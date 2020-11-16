@@ -14,10 +14,17 @@ class DeadcodeResultsParserSpec extends AnyWordSpec with Matchers {
     }
 
     "return list of issues" in {
-      val listOfResultsAsString = List("deadcode: main.go:11:1: example is unused", "deadcode: dir/main.go:12:1: example2 is unused")
+      val listOfResultsAsString =
+        List("deadcode: main.go:11:1: example is unused", "deadcode: dir/main.go:12:1: example2 is unused")
       val resultsList = List(
-        Result.Issue(Source.File("main.go"), Result.Message("example is unused"), Pattern.Id("deadcode"), Source.Line(11)),
-        Result.Issue(Source.File("dir/main.go"), Result.Message("example2 is unused"), Pattern.Id("deadcode"), Source.Line(12)),
+        Result
+          .Issue(Source.File("main.go"), Result.Message("example is unused"), Pattern.Id("deadcode"), Source.Line(11)),
+        Result.Issue(
+          Source.File("dir/main.go"),
+          Result.Message("example2 is unused"),
+          Pattern.Id("deadcode"),
+          Source.Line(12)
+        ),
       )
 
       val results = DeadcodeResultsParser.parse(listOfResultsAsString)
@@ -25,12 +32,21 @@ class DeadcodeResultsParserSpec extends AnyWordSpec with Matchers {
       results shouldBe resultsList
     }
 
-
     "return list of issues and ignore invalid" in {
-      val listOfResultsAsString = List("deadcode: main.go:11:1: example is unused", "deadcode: dir/main.go:12:1: example2 is unused", "this is invalid")
+      val listOfResultsAsString = List(
+        "deadcode: main.go:11:1: example is unused",
+        "deadcode: dir/main.go:12:1: example2 is unused",
+        "this is invalid"
+      )
       val resultsList = List(
-        Result.Issue(Source.File("main.go"), Result.Message("example is unused"), Pattern.Id("deadcode"), Source.Line(11)),
-        Result.Issue(Source.File("dir/main.go"), Result.Message("example2 is unused"), Pattern.Id("deadcode"), Source.Line(12)),
+        Result
+          .Issue(Source.File("main.go"), Result.Message("example is unused"), Pattern.Id("deadcode"), Source.Line(11)),
+        Result.Issue(
+          Source.File("dir/main.go"),
+          Result.Message("example2 is unused"),
+          Pattern.Id("deadcode"),
+          Source.Line(12)
+        ),
       )
 
       val results = DeadcodeResultsParser.parse(listOfResultsAsString)

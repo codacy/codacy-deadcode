@@ -1,13 +1,4 @@
 {
   "name": "deadcode",
-  "patterns": [
-    {
-      "patternId": "deadcode",
-      "level": "Warning",
-      "category": "CodeStyle",
-      "parameters": [],
-      "languages": [],
-      "enabled": true
-    }
-  ]
+  "patterns": []
 }
