@@ -9,7 +9,7 @@ import scala.util.{Success, Try}
 
 object Deadcode extends Tool {
   private val deadcodeCommand = "/app/deadcode"
-  private val directoriesMaxDepth = 5
+  private val directoriesMaxDepth = 100
 
   private val deadcodePatternId = "deadcode"
   private val defaultPatterns = List(deadcodePatternId)
@@ -51,7 +51,7 @@ object Deadcode extends Tool {
     root
       .walk(directoriesMaxDepth)
       .collect {
-        case directory if directory.isDirectory =>
+        case directory if directory.isDirectory && !directory.isSymbolicLink =>
           runToolOnSingleDirectory(directory)
       }
       .flatten
