@@ -34,6 +34,7 @@ workflows:
           requires:
             - publish_docker_local
       - codacy/publish_docker:
+          context: CodacyDocker
           filters:
             branches:
               only: master
