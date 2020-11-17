@@ -1,0 +1,12 @@
+{
+  "name": "deadcode",
+  "patterns": [
+    {
+      "patternId" : "deadcode",
+      "level" : "Warning",
+      "category" : "UnusedCode",
+      "parameters" : [ ],
+      "enabled" : true
+    }
+  ]
+}

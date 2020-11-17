@@ -1,0 +1,6 @@
+[ {
+  "patternId" : "deadcode",
+  "title" : "Deadcode",
+  "description" : "Code that is never used",
+  "parameters" : [ ]
+} ]
