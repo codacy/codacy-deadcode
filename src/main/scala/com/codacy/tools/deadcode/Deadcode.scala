@@ -11,6 +11,10 @@ object Deadcode extends Tool {
   private val deadcodeCommand = "/app/deadcode"
   private val directoriesMaxDepth = 5
 
+  private val deadcodePatternId = "deadcode"
+  private val defaultPatterns = List(deadcodePatternId)
+  private val defaultPatternsDefinitions = defaultPatterns.map(patternId => Pattern.Definition(Pattern.Id(patternId)))
+
   override def apply(
       source: Source.Directory,
       configuration: Option[List[Pattern.Definition]],
@@ -19,10 +23,20 @@ object Deadcode extends Tool {
   )(implicit specification: Tool.Specification): Try[List[Result]] = {
     val sourcePath = File(source.path)
 
-    val results = runTool(sourcePath)
+    val patternsToAnalyse = patternsToRun(configuration)
+    val results = patternsToAnalyse.fold[List[Result]](List.empty)(_ => runTool(sourcePath))
     val filteredResults = filterResultsForFiles(results, filesOpt)
 
     Success(filteredResults)
+  }
+
+  private def patternsToRun(configuration: Option[List[Pattern.Definition]]): Option[List[Pattern.Definition]] = {
+    val patternsConfiguration = configuration.getOrElse(defaultPatternsDefinitions).filter(isValidPattern)
+    Option(patternsConfiguration).filter(_.nonEmpty)
+  }
+
+  private def isValidPattern(patternsDefinition: Pattern.Definition): Boolean = {
+    defaultPatternsDefinitions.contains(patternsDefinition)
   }
 
   private def filterResultsForFiles(results: List[Result], filesOpt: Option[Set[Source.File]]): List[Result] = {
