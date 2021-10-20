@@ -1,9 +1,9 @@
-FROM golang:1.15.3-alpine3.12 as builder
+FROM golang:1.17.2-alpine3.14 as builder
 
 RUN apk add --no-cache git
 RUN go get -u github.com/tsenart/deadcode
 
-FROM openjdk:8-jre-alpine
+FROM amazoncorretto:8-alpine3.14-jre
 
 RUN apk add bash
 
